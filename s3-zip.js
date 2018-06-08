@@ -67,13 +67,24 @@ s3Zip.archiveStream = function (stream, filesS3, filesZip) {
    })
    .on('end', function () {
      self.debug && console.log('end -> finalize')
-     archive.finalize()
+
+     if (typeof this.beforeFinalizeHook === 'function') {
+      Promise.resolve(this.beforeFinalizeHook(archive))
+        .then(function () { archive.finalize() })
+     } else {
+        archive.finalize()
+     }
    })
    .on('error', function (err) {
      archive.emit('error', err)
    })
 
   return archive
+}
+
+s3Zip.beforeFinalize = function (cb) {
+  this.beforeFinalizeHook = cb
+  return this
 }
 
 s3Zip.setFormat = function (format) {
