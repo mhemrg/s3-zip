@@ -65,7 +65,7 @@ s3Zip.archiveStream = function (stream, filesS3, filesZip) {
        archive.append(file.data, entryData)
      }
    })
-   .on('end', function () {
+   .on('end', () => {
      self.debug && console.log('end -> finalize')
 
      if (typeof this.beforeFinalizeHook === 'function') {
